@@ -1,10 +1,12 @@
 package com.nbu.cscb869_medical_record_system.data.entity;
 
 import com.nbu.cscb869_medical_record_system.data.enums.MedicalSpecialty;
+import jakarta.persistence.Entity;
 
+@Entity
 public class Doctor extends Person{
-    MedicalSpecialty medicalSpecialty;
-    boolean canBeGeneralPractitioner;
+    private MedicalSpecialty medicalSpecialty;
+    private boolean canBeGeneralPractitioner;
 
     public MedicalSpecialty getMedicalSpecialty() {
         return medicalSpecialty;
