@@ -13,8 +13,8 @@ public interface SickLeaveRepository extends JpaRepository<SickLeave, Long> {
     List<SickLeave> findByPatientId(Long patientId);
     List<SickLeave> findByDoctorId(Long doctorId);
 
-    @Query(value = "SELECT MONTH(start_date) as m, YEAR(start_date) as y, COUNT (*) as cnt "+
-    "FROM sick_leaves GROUP BY y, m, ORDER BY  cnt DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT MONTH(start_date) as m, YEAR(start_date) as y, COUNT(*) as cnt "+
+    "FROM sick_leaves GROUP BY y, m ORDER BY  cnt DESC LIMIT 1", nativeQuery = true)
     List<Object[]> findMonthWithMostSickLeaves();
 
     @Query(value = "SELECT s.doctor, COUNT(S) as cnt FROM SickLeave s GROUP BY s.doctor ORDER BY cnt DESC")
