@@ -48,12 +48,15 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient update(Long id, PatientDto dto) {
-        return null;
+        Patient patient = findById(id);
+        mapDtoToEntity(dto, patient);
+        return patientRepository.save(patient);
     }
 
     @Override
     public void delete(Long id) {
-
+        findById(id);
+        patientRepository.deleteById(id);
     }
     private void mapDtoToEntity(PatientDto dto, Patient patient){
         patient.setName(dto.getName());
