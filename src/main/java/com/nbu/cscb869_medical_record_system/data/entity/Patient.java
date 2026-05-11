@@ -1,22 +1,23 @@
 package com.nbu.cscb869_medical_record_system.data.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.rmi.server.UID;
-
+@Table(name = "patients")
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 public class Patient extends Person {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "general_practitioner_id")
     private Doctor generalPractitioner;
 
-    public Doctor getGeneralPractitioner() {
-        return generalPractitioner;
-    }
+    @Column(nullable = false)
+    private boolean hasInsurance;
 
-    public void setGeneralPractitioner(Doctor generalPractitioner) {
-        this.generalPractitioner = generalPractitioner;
-    }
+    //Constructors, getters, setters handled by Lombok annotation
+
 }

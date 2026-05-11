@@ -1,26 +1,24 @@
 package com.nbu.cscb869_medical_record_system.data.entity;
 
 import com.nbu.cscb869_medical_record_system.data.enums.MedicalSpecialty;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Table(name = "doctors")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Doctor extends Person{
-    private MedicalSpecialty medicalSpecialty;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MedicalSpecialty specialty;
+
+    @Column(nullable = false)
     private boolean canBeGeneralPractitioner;
 
-    public MedicalSpecialty getMedicalSpecialty() {
-        return medicalSpecialty;
-    }
+    //Constructors, getters, setters handled by Lombok annotation
 
-    public void setMedicalSpecialty(MedicalSpecialty medicalSpecialty) {
-        this.medicalSpecialty = medicalSpecialty;
-    }
-
-    public boolean isCanBeGeneralPractitioner() {
-        return canBeGeneralPractitioner;
-    }
-
-    public void setCanBeGeneralPractitioner(boolean canBeGeneralPractitioner) {
-        this.canBeGeneralPractitioner = canBeGeneralPractitioner;
-    }
 }

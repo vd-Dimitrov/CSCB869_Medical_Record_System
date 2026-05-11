@@ -5,19 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "checkups")
-@Setter
+@Table(name = "sick_leaves")
 @Getter
+@Setter
 @NoArgsConstructor
-public class CheckUp {
-
+public class SickLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
@@ -28,21 +26,8 @@ public class CheckUp {
     private Doctor doctor;
 
     @Column(nullable = false)
-    private LocalDate date;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diagnosis_id", nullable = false)
-    private Diagnosis diagnosis;
-
-    private String treatment;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private boolean paidByPatient;
-
-    //Constructors, getters, setters handled by Lombok annotation
-
-
+    private int durationDays;
 }
