@@ -30,7 +30,7 @@ public class PatientServiceImpl implements PatientService {
     @Transactional(readOnly = true)
     public Patient findById(Long id) {
         return patientRepository.findById(id)
-                .orElseThrow( () -> new ResourceNotFoundException("Patient is not found with id: " + id));
+                .orElseThrow( () -> new ResourceNotFoundException("Patient", id));
     }
 
     @Override
@@ -39,6 +39,7 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findByGeneralPractitionerId(doctorId);
     }
 
+    //ToDo add the new mapToDto function from the upcoming helper class
     @Override
     public Patient save(PatientDto dto) {
         Patient patient = new Patient();
@@ -64,7 +65,7 @@ public class PatientServiceImpl implements PatientService {
         patient.setHasInsurance(dto.isHasHealthInsurance());
         if (dto.getGeneralPractitionerId() != null){
             Doctor gp = doctorRepository.findById(dto.getGeneralPractitionerId())
-                    .orElseThrow( () -> new ResourceNotFoundException("Doctor not found with id: " + dto.getGeneralPractitionerId()));
+                    .orElseThrow( () -> new ResourceNotFoundException("Doctor", dto.getGeneralPractitionerId()));
             patient.setGeneralPractitioner(gp);
         }
     }
