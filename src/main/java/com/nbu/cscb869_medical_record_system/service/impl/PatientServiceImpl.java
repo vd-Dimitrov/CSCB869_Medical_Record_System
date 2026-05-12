@@ -1,11 +1,11 @@
 package com.nbu.cscb869_medical_record_system.service.impl;
 
 import com.nbu.cscb869_medical_record_system.data.dto.PatientDto;
-import com.nbu.cscb869_medical_record_system.data.entity.Doctor;
 import com.nbu.cscb869_medical_record_system.data.entity.Patient;
 import com.nbu.cscb869_medical_record_system.data.repository.DoctorRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.PatientRepository;
 import com.nbu.cscb869_medical_record_system.exceptions.ResourceNotFoundException;
+import com.nbu.cscb869_medical_record_system.helpers.EntityMapper;
 import com.nbu.cscb869_medical_record_system.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
 @Transactional
 public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
-    private DoctorRepository doctorRepository;
+    private final EntityMapper entityMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -43,14 +43,14 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient save(PatientDto dto) {
         Patient patient = new Patient();
-        mapDtoToEntity(dto, patient);
+        entityMapper.map(dto, patient);
         return patientRepository.save(patient);
     }
 
     @Override
     public Patient update(Long id, PatientDto dto) {
         Patient patient = findById(id);
-        mapDtoToEntity(dto, patient);
+        entityMapper.map(dto, patient);
         return patientRepository.save(patient);
     }
 
@@ -58,16 +58,6 @@ public class PatientServiceImpl implements PatientService {
     public void delete(Long id) {
         findById(id);
         patientRepository.deleteById(id);
-    }
-    private void mapDtoToEntity(PatientDto dto, Patient patient){
-        patient.setName(dto.getName());
-        patient.setEgn(dto.getEgn());
-        patient.setHasInsurance(dto.isHasHealthInsurance());
-        if (dto.getGeneralPractitionerId() != null){
-            Doctor gp = doctorRepository.findById(dto.getGeneralPractitionerId())
-                    .orElseThrow( () -> new ResourceNotFoundException("Doctor", dto.getGeneralPractitionerId()));
-            patient.setGeneralPractitioner(gp);
-        }
     }
 
 }
