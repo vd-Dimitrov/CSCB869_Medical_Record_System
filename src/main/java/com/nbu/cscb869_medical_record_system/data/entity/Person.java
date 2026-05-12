@@ -12,7 +12,7 @@ import lombok.Setter;
 public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(unique = true, nullable = false, length = 10)
     @NotBlank

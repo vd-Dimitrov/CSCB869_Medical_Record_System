@@ -2,7 +2,6 @@ package com.nbu.cscb869_medical_record_system.service.impl;
 
 import com.nbu.cscb869_medical_record_system.data.dto.PatientDto;
 import com.nbu.cscb869_medical_record_system.data.entity.Patient;
-import com.nbu.cscb869_medical_record_system.data.repository.DoctorRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.PatientRepository;
 import com.nbu.cscb869_medical_record_system.exceptions.ResourceNotFoundException;
 import com.nbu.cscb869_medical_record_system.helpers.EntityMapper;
@@ -17,8 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class PatientServiceImpl implements PatientService {
-    private PatientRepository patientRepository;
     private final EntityMapper entityMapper;
+    private final PatientRepository patientRepository;
 
     @Override
     @Transactional(readOnly = true)
