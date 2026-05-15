@@ -17,6 +17,6 @@ public interface SickLeaveRepository extends JpaRepository<SickLeave, Long> {
     "FROM sick_leaves GROUP BY y, m ORDER BY  cnt DESC LIMIT 1", nativeQuery = true)
     List<Object[]> findMonthWithMostSickLeaves();
 
-    @Query(value = "SELECT s.doctor, COUNT(S) as cnt FROM SickLeave s GROUP BY s.doctor ORDER BY cnt DESC")
+    @Query(value = "SELECT s.doctor, COUNT(s) as cnt FROM SickLeave s GROUP BY s.doctor ORDER BY cnt DESC")
     List<Object[]> findDoctorSickLeaveCounts();
 }

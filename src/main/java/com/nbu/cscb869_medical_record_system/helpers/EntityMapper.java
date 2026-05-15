@@ -1,15 +1,12 @@
 package com.nbu.cscb869_medical_record_system.helpers;
 
-import com.nbu.cscb869_medical_record_system.data.dto.DoctorDto;
-import com.nbu.cscb869_medical_record_system.data.dto.PatientDto;
-import com.nbu.cscb869_medical_record_system.data.dto.UserDto;
-import com.nbu.cscb869_medical_record_system.data.entity.AppUser;
-import com.nbu.cscb869_medical_record_system.data.entity.Doctor;
-import com.nbu.cscb869_medical_record_system.data.entity.Patient;
+import com.nbu.cscb869_medical_record_system.data.dto.*;
+import com.nbu.cscb869_medical_record_system.data.entity.*;
+import com.nbu.cscb869_medical_record_system.data.repository.DiagnosisRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.DoctorRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.PatientRepository;
+import com.nbu.cscb869_medical_record_system.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,12 +14,8 @@ import org.springframework.stereotype.Component;
 public class EntityMapper {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private final DiagnosisRepository diagnosisRepository;
 
-    @Autowired
-    public EntityMapper(DoctorRepository doctorRepository, PatientRepository patientRepository){
-        this.doctorRepository = doctorRepository;
-        this.patientRepository = patientRepository;
-    }
 
     public static void map(DoctorDto dto, Doctor entity){
         entity.setName(dto.getName());
@@ -44,6 +37,39 @@ public class EntityMapper {
         entity.setRole(dto.getRole());
         entity.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow());
         entity.setPatient(patientRepository.findById(dto.getPatientId()).orElseThrow());
+    }
+
+    public void map(DiagnosisDto dto, Diagnosis entity){
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+    }
+
+    public void map(CheckUpDto dto, CheckUp checkUp){
+        Patient patient = patientRepository.findById(dto.getPatientId())
+                .orElseThrow( () -> new ResourceNotFoundException("Patient", dto.getPatientId()));
+        Doctor doctor = doctorRepository.findById(dto.getPatientId())
+                .orElseThrow( () -> new ResourceNotFoundException("Doctor", dto.getDoctorId()));
+        Diagnosis diagnosis  = diagnosisRepository.findById(dto.getDiagnosisId())
+                .orElseThrow( () -> new ResourceNotFoundException("Diagnosis", dto.getDiagnosisId()));
+
+        checkUp.setPatient(patient);
+        checkUp.setDoctor(doctor);
+        checkUp.setDate(dto.getDate());
+        checkUp.setDiagnosis(diagnosis);
+        checkUp.setTreatment(dto.getTreatment());
+        checkUp.setPrice(dto.getPrice());
+        checkUp.setPaidByPatient(!patient.isHasInsurance());
+    }
+
+    public void map(SickLeaveDto dto, SickLeave sickLeave){
+        Patient patient = patientRepository.findById(dto.getPatientId())
+                .orElseThrow( () -> new ResourceNotFoundException("Patient", dto.getPatientId()));
+        Doctor doctor = doctorRepository.findById(dto.getDoctorId())
+                .orElseThrow( () -> new ResourceNotFoundException("Doctor", dto.getDoctorId()));
+        sickLeave.setPatient(patient);
+        sickLeave.setDoctor(doctor);
+        sickLeave.setStartDate(dto.getStartDate());
+        sickLeave.setDurationDays(dto.getDuration());
     }
 
 }
