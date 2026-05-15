@@ -49,7 +49,6 @@ public class CheckUpRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(checkUpService.save(dto));
     }
 
-    //ToDo create user verification
     @PutMapping("/{id}")
     public CheckUp update(@PathVariable Long id,
                           @Valid @RequestBody CheckUpDto dto,
