@@ -25,9 +25,9 @@ public class SickLeave {
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    @Column(nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(name = "duration_days", nullable = false)
     private int durationDays;
 }

@@ -47,6 +47,7 @@ public class HibernateConfig {
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 //        hibernateProperties.setProperty("hibernate.show_sql", "true");
 //        hibernateProperties.setProperty("hibernate.format_sql", "true");
         return hibernateProperties;

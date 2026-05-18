@@ -39,7 +39,7 @@ public class CheckUp {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false)
+    @Column(name = "paid_by_patient", nullable = false)
     private boolean paidByPatient;
 
     //Constructors, getters, setters handled by Lombok annotation
