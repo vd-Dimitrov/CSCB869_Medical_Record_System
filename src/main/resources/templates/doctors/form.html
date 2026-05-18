@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Doctor Form – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-form">
+        <div class="card form-card">
+            <div class="card-header-bar">
+                <i class="bi bi-person-badge icon-teal"></i>
+                <h2 th:text="${doctorDto.id == null ? 'New Doctor' : 'Edit Doctor'}"></h2>
+            </div>
+            <div class="card-body">
+                <form th:action="${doctorDto.id == null ? '/doctors/new' : '/doctors/' + doctorDto.id + '/edit'}"
+                      th:object="${doctorDto}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <label>
+                            <input type="text" th:field="*{name}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                   placeholder="Full name">
+                        </label>
+                        <div class="invalid-feedback" th:errors="*{name}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">EGN (10 digits)</label>
+                        <label>
+                            <input type="text" th:field="*{egn}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('egn')} ? 'is-invalid'"
+                                   placeholder="0000000000" maxlength="10">
+                        </label>
+                        <div class="invalid-feedback" th:errors="*{egn}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Specialty</label>
+                        <label>
+                            <select th:field="*{specialty}" class="form-select"
+                                    th:classappend="${#fields.hasErrors('specialty')} ? 'is-invalid'">
+                                <option value="">-- Select specialty --</option>
+                                <option th:each="s : ${specialties}" th:value="${s}" th:text="${s}"></option>
+                            </select>
+                        </label>
+                        <div class="invalid-feedback" th:errors="*{specialty}"></div>
+                    </div>
+                    <div class="mb-2 form-check">
+                        <input type="checkbox" th:field="*{canBeGeneralPractitioner}" class="form-check-input" id="gpCheck">
+                        <label class="form-check-label check-label" for="gpCheck">
+                            Can be General Practitioner
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Save Doctor</button>
+                        <a th:href="@{/doctors}" class="btn-cancel">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
