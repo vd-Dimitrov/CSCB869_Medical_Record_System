@@ -17,7 +17,7 @@ public class PatientDto {
     private String name;
 
     @NotBlank(message = "egn is required")
-    @Pattern(regexp = "\\d{10}", message = "EGN must be exactly 10 digis")
+    @Pattern(regexp = "\\d{10}", message = "EGN must be exactly 10 digits")
     private String egn;
 
     @NotNull(message = "General Practitioner is required")
