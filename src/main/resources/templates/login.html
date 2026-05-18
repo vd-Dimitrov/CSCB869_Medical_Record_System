@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Login – MedRecords')}"></head>
+<body>
+<div class="login-wrapper">
+    <div class="card login-card">
+        <div class="login-brand">
+            <h5><i class="bi bi-heart-pulse-fill me-2"></i>Medical Records System</h5>
+            <p>Sign in to your account</p>
+        </div>
+        <div class="login-body">
+            <div th:if="${param.error}" class="alert alert-danger py-2 mb-3" style="font-size:.875rem">
+                <i class="bi bi-exclamation-circle me-1"></i> Invalid username or password.
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success py-2 mb-3" style="font-size:.875rem">
+                <i class="bi bi-check-circle me-1"></i> You have been logged out.
+            </div>
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required autofocus
+                           placeholder="Enter username">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required
+                           placeholder="Enter password">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2" style="font-weight:600">Sign In</button>
+            </form>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
