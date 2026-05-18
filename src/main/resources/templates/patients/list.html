@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head th:replace="~{fragments/layout :: head('Patients – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-lg">
+        <div class="page-header">
+            <h1 class="page-title"><i class="bi bi-people me-2 icon-green"></i>Patients</h1>
+            <a th:href="@{/patients/new}" class="btn btn-primary" sec:authorize="hasRole('ADMIN')">
+                <i class="bi bi-plus-lg me-1"></i>New Patient
+            </a>
+        </div>
+        <div class="card">
+            <table class="table data-table">
+                <thead>
+                <tr><th>Name</th><th>EGN</th><th>General Practitioner</th><th>Insurance</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="patient : ${patients}">
+                    <td><a th:href="@{/patients/{id}(id=${patient.id})}" th:text="${patient.name}"></a></td>
+                    <td th:text="${patient.egn}"></td>
+                    <td th:text="${patient.generalPractitioner?.name ?: 'N/A'}"></td>
+                    <td>
+                        <span th:if="${patient.isHasInsurance()}" class="badge-yes">Insured</span>
+                        <span th:unless="${patient.isHasInsurance()}" class="badge-no">Uninsured</span>
+                    </td>
+                    <td class="d-flex gap-2 flex-wrap">
+                        <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="btn-action-edit"
+                           sec:authorize="hasRole('ADMIN')">
+                            <i class="bi bi-pencil"></i>Edit
+                        </a>
+                        <form th:action="@{/patients/{id}/delete(id=${patient.id})}" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this patient?');" sec:authorize="hasRole('ADMIN')">
+                            <button type="submit" class="btn-action-delete">
+                                <i class="bi bi-trash"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(patients)}">
+                    <td colspan="5" class="table-empty">No patients found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
