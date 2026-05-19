@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('User Management – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-lg">
+        <div class="page-header">
+            <h1 class="page-title"><i class="bi bi-shield-lock me-2 icon-danger"></i>User Management</h1>
+            <a th:href="@{/admin/new}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>New User
+            </a>
+        </div>
+        <div class="card">
+            <table class="table data-table">
+                <thead>
+                <tr><th>Username</th><th>Role</th><th>Linked To</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td class="text-medium" th:text="${user.username}"></td>
+                    <td>
+                        <span th:text="${user.role}"
+                              th:class="${user.role.name() == 'ADMIN'} ? 'icon-danger text-semibold' :
+                                         (${user.role.name() == 'DOCTOR'} ? 'icon-teal text-semibold' :
+                                          'icon-green text-semibold')"></span>
+                    </td>
+                    <td th:text="${user.doctor != null ? user.doctor.name : (user.patient != null ? user.patient.name : '—')}"></td>
+                    <td class="d-flex gap-2 flex-wrap">
+                        <a th:href="@{/admin/{id}/edit(id=${user.id})}" class="btn-action-edit">
+                            <i class="bi bi-pencil"></i>Edit
+                        </a>
+                        <form th:action="@{/admin/{id}/delete(id=${user.id})}" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this user?');">
+                            <button type="submit" class="btn-action-delete">
+                                <i class="bi bi-trash"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="4" class="table-empty">No users found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

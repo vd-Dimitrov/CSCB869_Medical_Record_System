@@ -17,13 +17,66 @@
 }
 
 /* base body */
-body { /* custom — Outfit font + page background */
+body {
     font-family: 'Outfit', sans-serif;
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
 }
 
-/* page layout */
+/* container widths  */
+.container-form      { max-width: 580px; width: 100%; margin: 0 auto; padding: 0 1rem; }
+.container-form-wide { max-width: 640px; width: 100%; margin: 0 auto; padding: 0 1rem; }
+
+/* text weights */
+.text-semibold { font-weight: 600; }
+.text-medium   { font-weight: 500; }
+.text-sm       { font-size: .875rem; }
+.text-xs       { font-size: .82rem; }
+
+/* icon colour utilities */
+.icon-teal    { color: var(--flatly-green); }
+.icon-green   { color: var(--flatly-green); }
+.icon-danger  { color: var(--flatly-red); }
+.icon-warning { color: var(--flatly-orange); }
+.icon-muted   { color: var(--muted); }
+.icon-purple  { color: #7c3aed; }
+
+/* dashboard accents */
+.dash-card-teal   { --dash-accent: var(--flatly-green); }
+.dash-card-green  { --dash-accent: #059669; }
+.dash-card-purple { --dash-accent: #7c3aed; }
+.dash-card-amber  { --dash-accent: #d97706; }
+.dash-card-slate  { --dash-accent: #64748b; }
+.dash-card-red    { --dash-accent: var(--flatly-red); }
+
+/* form utilities  */
+.check-label {  /* resets form-label uppercase style for checkboxes */
+    font-size: .9rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text);
+}
+
+.form-hint {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    font-size: .8rem;
+}
+
+.hidden { display: none; }
+
+/* error page heading */
+.error-heading { font-size: 1.2rem; font-weight: 600; margin: .75rem 0 .5rem; }
+
+/* Statistics result labels and items */
+.stats-result-label { font-size: .82rem; color: var(--muted); margin-bottom: .5rem; }
+.stats-result-item  { font-size: .875rem; padding: .2rem 0; border-bottom: 1px solid var(--border); }
+.badge-lg           { padding: .35rem .85rem !important; font-size: .85rem !important; }
+
+/* Page layout */
 .page-wrapper { padding: 2rem 0 4rem; animation: fadeUp .2s ease both; }
 
 .page-header {

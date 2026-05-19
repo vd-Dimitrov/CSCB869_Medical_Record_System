@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head th:replace="~{fragments/layout :: head('Doctors – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-lg">
+        <div class="page-header">
+            <h1 class="page-title"><i class="bi bi-person-badge me-2 icon-teal"></i>Doctors</h1>
+            <a th:href="@{/doctors/new}" class="btn btn-primary" sec:authorize="hasRole('ADMIN')">
+                <i class="bi bi-plus-lg me-1"></i>New Doctor
+            </a>
+        </div>
+        <div class="card">
+            <table class="table data-table">
+                <thead>
+                <tr><th>Name</th><th>EGN</th><th>Specialty</th><th>GP Eligible</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="doctor : ${doctors}">
+                    <td><a th:href="@{/doctors/{id}(id=${doctor.id})}" th:text="${doctor.name}"></a></td>
+                    <td th:text="${doctor.egn}"></td>
+                    <td th:text="${doctor.specialty}"></td>
+                    <td>
+                        <span th:if="${doctor.canBeGeneralPractitioner}" class="badge-yes">Yes</span>
+                        <span th:unless="${doctor.canBeGeneralPractitioner}" class="badge-no">No</span>
+                    </td>
+                    <td class="d-flex gap-2 flex-wrap">
+                        <a th:href="@{/doctors/{id}/edit(id=${doctor.id})}" class="btn-action-edit"
+                           sec:authorize="hasRole('ADMIN')">
+                            <i class="bi bi-pencil"></i>Edit
+                        </a>
+                        <form th:action="@{/doctors/{id}/delete(id=${doctor.id})}" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this doctor?');" sec:authorize="hasRole('ADMIN')">
+                            <button type="submit" class="btn-action-delete">
+                                <i class="bi bi-trash"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(doctors)}">
+                    <td colspan="5" class="table-empty">No doctors found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

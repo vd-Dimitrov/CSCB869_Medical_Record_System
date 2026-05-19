@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Sick Leave Form – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-form">
+        <div class="card form-card">
+            <div class="card-header-bar">
+                <i class="bi bi-file-medical icon-warning"></i>
+                <h2 th:text="${sickLeaveDto.id == null ? 'New Sick Leave' : 'Edit Sick Leave'}"></h2>
+            </div>
+            <div class="card-body">
+                <form th:action="${sickLeaveDto.id == null ? '/sickleaves/new' : '/sickleaves/' + sickLeaveDto.id + '/edit'}"
+                      th:object="${sickLeaveDto}" method="post">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Patient</label>
+                            <select th:field="*{patientId}" class="form-select"
+                                    th:classappend="${#fields.hasErrors('patientId')} ? 'is-invalid'">
+                                <option value="">-- Select patient --</option>
+                                <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.name}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{patientId}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Doctor</label>
+                            <select th:field="*{doctorId}" class="form-select"
+                                    th:classappend="${#fields.hasErrors('doctorId')} ? 'is-invalid'">
+                                <option value="">-- Select doctor --</option>
+                                <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{doctorId}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" th:field="*{startDate}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{startDate}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Duration (days)</label>
+                            <input type="number" th:field="*{durationDays}" class="form-control" min="1"
+                                   th:classappend="${#fields.hasErrors('durationDays')} ? 'is-invalid'"
+                                   placeholder="e.g. 7">
+                            <div class="invalid-feedback" th:errors="*{durationDays}"></div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Save Sick Leave</button>
+                        <a th:href="@{/sickleaves}" class="btn-cancel">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

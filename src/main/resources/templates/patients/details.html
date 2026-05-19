@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Patient Detail – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-form">
+        <div class="page-header">
+            <h1 class="page-title" th:text="${patient.name}"></h1>
+        </div>
+        <div class="card mb-3">
+            <table class="table detail-table mb-0">
+                <tbody>
+                <tr><th>EGN</th><td th:text="${patient.egn}"></td></tr>
+                <tr><th>General Practitioner</th><td th:text="${patient.generalPractitioner?.name ?: 'N/A'}"></td></tr>
+                <tr>
+                    <th>Health Insurance</th>
+                    <td>
+                        <span th:if="${patient.isHasInsurance()}" class="badge-yes">Insured</span>
+                        <span th:unless="${patient.isHasInsurance()}" class="badge-no">Not insured</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/patients}" class="btn-cancel"><i class="bi bi-arrow-left me-1"></i>Back</a>
+            <a th:href="@{/statistics/patient-history(patientId=${patient.id})}"
+               class="btn-action-view">
+                <i class="bi bi-clock-history"></i>Visit History
+            </a>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

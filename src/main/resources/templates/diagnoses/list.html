@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head th:replace="~{fragments/layout :: head('Diagnoses – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-lg">
+        <div class="page-header">
+            <h1 class="page-title"><i class="bi bi-journal-medical me-2 icon-muted"></i>Diagnoses</h1>
+            <a th:href="@{/diagnoses/new}" class="btn btn-primary" sec:authorize="hasRole('ADMIN')">
+                <i class="bi bi-plus-lg me-1"></i>New Diagnosis
+            </a>
+        </div>
+        <div class="card">
+            <table class="table data-table">
+                <thead>
+                <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${diagnoses}">
+                    <td class="text-medium" th:text="${d.name}"></td>
+                    <td class="text-muted" th:text="${d.description}"></td>
+                    <td class="d-flex gap-2 flex-wrap">
+                        <a th:href="@{/diagnoses/{id}/edit(id=${d.id})}" class="btn-action-edit"
+                           sec:authorize="hasRole('ADMIN')">
+                            <i class="bi bi-pencil"></i>Edit
+                        </a>
+                        <form th:action="@{/diagnoses/{id}/delete(id=${d.id})}" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this diagnosis?');" sec:authorize="hasRole('ADMIN')">
+                            <button type="submit" class="btn-action-delete">
+                                <i class="bi bi-trash"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(diagnoses)}">
+                    <td colspan="3" class="table-empty">No diagnoses found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

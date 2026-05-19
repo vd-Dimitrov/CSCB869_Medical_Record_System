@@ -16,7 +16,7 @@ public class Doctor extends Person{
     @Column(nullable = false)
     private MedicalSpecialty specialty;
 
-    @Column(nullable = false)
+    @Column(name = "can_be_general_practitioner", nullable = false)
     private boolean canBeGeneralPractitioner;
 
     //Constructors, getters, setters handled by Lombok annotation

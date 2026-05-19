@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Doctor Detail – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-form">
+        <div class="page-header">
+            <h1 class="page-title" th:text="${doctor.name}"></h1>
+        </div>
+        <div class="card">
+            <table class="table detail-table mb-0">
+                <tbody>
+                <tr><th>EGN</th><td th:text="${doctor.egn}"></td></tr>
+                <tr><th>Specialty</th><td th:text="${doctor.specialty}"></td></tr>
+                <tr>
+                    <th>GP Eligible</th>
+                    <td>
+                        <span th:if="${doctor.canBeGeneralPractitioner}" class="badge-yes">Yes</span>
+                        <span th:unless="${doctor.canBeGeneralPractitioner}" class="badge-no">No</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3">
+            <a th:href="@{/doctors}" class="btn-cancel"><i class="bi bi-arrow-left me-1"></i>Back to Doctors</a>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

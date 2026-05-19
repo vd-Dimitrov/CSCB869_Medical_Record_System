@@ -15,7 +15,7 @@ public class Patient extends Person {
     @JoinColumn(name = "general_practitioner_id")
     private Doctor generalPractitioner;
 
-    @Column(nullable = false)
+    @Column(name = "has_health_insurance", nullable = false)
     private boolean hasInsurance;
 
     //Constructors, getters, setters handled by Lombok annotation
