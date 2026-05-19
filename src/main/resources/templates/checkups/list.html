@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head th:replace="~{fragments/layout :: head('Check-ups – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-lg">
+        <div class="page-header">
+            <h1 class="page-title"><i class="bi bi-clipboard2-pulse me-2 icon-purple"></i>Check-ups</h1>
+            <a th:href="@{/checkups/new}" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
+                <i class="bi bi-plus-lg me-1"></i>New Check-up
+            </a>
+        </div>
+        <div class="card">
+            <table class="table data-table">
+                <thead>
+                <tr><th>Date</th><th>Patient</th><th>Doctor</th><th>Diagnosis</th><th>Price</th><th>Paid By</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="cu : ${checkUps}">
+                    <td th:text="${cu.date}"></td>
+                    <td th:text="${cu.patient.name}"></td>
+                    <td th:text="${cu.doctor.name}"></td>
+                    <td th:text="${cu.diagnosis.name}"></td>
+                    <td th:text="${cu.price + ' BGN'}"></td>
+                    <td>
+                        <span th:if="${cu.paidByPatient}" class="badge-patient">Patient</span>
+                        <span th:unless="${cu.paidByPatient}" class="badge-nhif">NHIF</span>
+                    </td>
+                    <td class="d-flex gap-2 flex-wrap">
+                        <a th:href="@{/checkups/{id}(id=${cu.id})}" class="btn-action-view">
+                            <i class="bi bi-eye"></i>View
+                        </a>
+                        <a th:if="${currentDoctorId == null or cu.doctor.id == currentDoctorId}"
+                           th:href="@{/checkups/{id}/edit(id=${cu.id})}" class="btn-action-edit"
+                           sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
+                            <i class="bi bi-pencil"></i>Edit
+                        </a>
+                        <form th:action="@{/checkups/{id}/delete(id=${cu.id})}" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this check-up?');" sec:authorize="hasRole('ADMIN')">
+                            <button type="submit" class="btn-action-delete">
+                                <i class="bi bi-trash"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(checkUps)}">
+                    <td colspan="7" class="table-empty">No check-ups found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
