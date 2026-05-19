@@ -37,7 +37,7 @@
                             <select th:field="*{specialty}" class="form-select"
                                     th:classappend="${#fields.hasErrors('specialty')} ? 'is-invalid'">
                                 <option value="">-- Select specialty --</option>
-                                <option th:each="s : ${specialties}" th:value="${s}" th:text="${s}"></option>
+                                <option th:each="s : ${specialties}" th:value="${s}" th:text="${s.displayName}"></option>
                             </select>
                         </label>
                         <div class="invalid-feedback" th:errors="*{specialty}"></div>
