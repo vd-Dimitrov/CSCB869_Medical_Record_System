@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Check-up Detail – MedRecords')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="page-wrapper">
+    <div class="container-form">
+        <div class="page-header">
+            <h1 class="page-title">Check-up Details</h1>
+        </div>
+        <div class="card mb-3">
+            <table class="table detail-table mb-0">
+                <tbody>
+                <tr><th>Date</th><td th:text="${checkUp.date}"></td></tr>
+                <tr><th>Patient</th><td th:text="${checkUp.patient.name}"></td></tr>
+                <tr><th>Doctor</th><td th:text="${checkUp.doctor.name}"></td></tr>
+                <tr><th>Diagnosis</th><td th:text="${checkUp.diagnosis.name}"></td></tr>
+                <tr><th>Treatment</th><td th:text="${checkUp.treatment}"></td></tr>
+                <tr><th>Price</th><td th:text="${checkUp.price + ' BGN'}"></td></tr>
+                <tr>
+                    <th>Paid By</th>
+                    <td>
+                        <span th:if="${checkUp.paidByPatient}" class="badge-patient">Patient</span>
+                        <span th:unless="${checkUp.paidByPatient}" class="badge-nhif">NHIF</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <a th:href="@{/checkups}" class="btn-cancel"><i class="bi bi-arrow-left me-1"></i>Back to Check-ups</a>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
