@@ -10,4 +10,5 @@ class Cscb869MedicalRecordSystemApplicationTests {
     void contextLoads() {
     }
 
+    //ToDo add tests
 }
