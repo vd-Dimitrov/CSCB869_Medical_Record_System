@@ -12,7 +12,14 @@
             <table class="table detail-table mb-0">
                 <tbody>
                 <tr><th>EGN</th><td th:text="${doctor.egn}"></td></tr>
-                <tr><th>Specialty</th><td th:text="${doctor.specialty}"></td></tr>
+                <tr>
+                    <th>Specialties</th>
+                    <td>
+                        <th:block th:each="s,stat : ${doctor.specialties}">
+                            <span th:text="${s.displayName}"></span><span th:unless="${stat.last}">, </span>
+                        </th:block>
+                    </td>
+                </tr>
                 <tr>
                     <th>GP Eligible</th>
                     <td>

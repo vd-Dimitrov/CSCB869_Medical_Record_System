@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "checkups")
@@ -30,9 +31,13 @@ public class CheckUp {
     @Column(nullable = false)
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diagnosis_id", nullable = false)
-    private Diagnosis diagnosis;
+    @ManyToMany
+    @JoinTable(
+        name = "checkup_diagnoses",
+        joinColumns = @JoinColumn(name = "checkup_id"),
+        inverseJoinColumns = @JoinColumn(name = "diagnosis_id")
+    )
+    private List<Diagnosis> diagnoses;
 
     private String treatment;
 

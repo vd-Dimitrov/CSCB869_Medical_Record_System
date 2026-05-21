@@ -37,7 +37,7 @@ class DoctorServiceImplTest {
         doctor = new Doctor();
         ReflectionTestUtils.setField(doctor, "id", 1L);
         doctor.setName("Dr. Petrov");
-        doctor.setSpecialty(MedicalSpecialty.FAMILY_MEDICINE);
+        doctor.setSpecialties(List.of(MedicalSpecialty.FAMILY_MEDICINE));
         doctor.setCanBeGeneralPractitioner(true);
     }
 
@@ -77,7 +77,7 @@ class DoctorServiceImplTest {
         DoctorDto dto = new DoctorDto();
         dto.setName("Dr. Smith");
         dto.setEgn("1234567890");
-        dto.setSpecialty(MedicalSpecialty.CARDIOLOGY);
+        dto.setSpecialties(List.of(MedicalSpecialty.CARDIOLOGY));
 
         Doctor result = service.save(dto);
 
@@ -92,14 +92,14 @@ class DoctorServiceImplTest {
         DoctorDto dto = new DoctorDto();
         dto.setName("Dr. Updated");
         dto.setEgn("9876543210");
-        dto.setSpecialty(MedicalSpecialty.CARDIOLOGY);
+        dto.setSpecialties(List.of(MedicalSpecialty.CARDIOLOGY));
         dto.setCanBeGeneralPractitioner(false);
 
         Doctor result = service.update(1L, dto);
 
         assertThat(result).isSameAs(doctor);
         assertThat(doctor.getName()).isEqualTo("Dr. Updated");
-        assertThat(doctor.getSpecialty()).isEqualTo(MedicalSpecialty.CARDIOLOGY);
+        assertThat(doctor.getSpecialties()).containsExactly(MedicalSpecialty.CARDIOLOGY);
         verify(doctorRepository).save(doctor);
     }
 
@@ -107,7 +107,7 @@ class DoctorServiceImplTest {
     void update_missingId_throwsResourceNotFoundException() {
         when(doctorRepository.findById(99L)).thenReturn(Optional.empty());
         DoctorDto dto = new DoctorDto();
-        dto.setSpecialty(MedicalSpecialty.NEUROLOGY);
+        dto.setSpecialties(List.of(MedicalSpecialty.NEUROLOGY));
 
         assertThatThrownBy(() -> service.update(99L, dto))
                 .isInstanceOf(ResourceNotFoundException.class);

@@ -9,6 +9,8 @@ import com.nbu.cscb869_medical_record_system.exceptions.ResourceNotFoundExceptio
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class EntityMapper {
@@ -19,7 +21,7 @@ public class EntityMapper {
 
     public static void map(DoctorDto dto, Doctor entity){
         entity.setName(dto.getName());
-        entity.setSpecialty(dto.getSpecialty());
+        entity.setSpecialties(dto.getSpecialties());
         entity.setEgn(dto.getEgn());
         entity.setCanBeGeneralPractitioner(dto.isCanBeGeneralPractitioner());
     }
@@ -47,15 +49,17 @@ public class EntityMapper {
     public void map(CheckUpDto dto, CheckUp checkUp){
         Patient patient = patientRepository.findById(dto.getPatientId())
                 .orElseThrow( () -> new ResourceNotFoundException("Patient", dto.getPatientId()));
-        Doctor doctor = doctorRepository.findById(dto.getPatientId())
+        Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow( () -> new ResourceNotFoundException("Doctor", dto.getDoctorId()));
-        Diagnosis diagnosis  = diagnosisRepository.findById(dto.getDiagnosisId())
-                .orElseThrow( () -> new ResourceNotFoundException("Diagnosis", dto.getDiagnosisId()));
+        List<Diagnosis> diagnoses = dto.getDiagnosisIds().stream()
+                .map(id -> diagnosisRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Diagnosis", id)))
+                .collect(java.util.stream.Collectors.toList());
 
         checkUp.setPatient(patient);
         checkUp.setDoctor(doctor);
         checkUp.setDate(dto.getDate());
-        checkUp.setDiagnosis(diagnosis);
+        checkUp.setDiagnoses(diagnoses);
         checkUp.setTreatment(dto.getTreatment());
         checkUp.setPrice(dto.getPrice());
         checkUp.setPaidByPatient(!patient.isHasInsurance());

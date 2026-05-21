@@ -21,7 +21,11 @@
                 <tr th:each="doctor : ${doctors}">
                     <td><a th:href="@{/doctors/{id}(id=${doctor.id})}" th:text="${doctor.name}"></a></td>
                     <td th:text="${doctor.egn}"></td>
-                    <td th:text="${doctor.specialty}"></td>
+                    <td>
+                        <th:block th:each="s,stat : ${doctor.specialties}">
+                            <span th:text="${s.displayName}"></span><span th:unless="${stat.last}">, </span>
+                        </th:block>
+                    </td>
                     <td>
                         <span th:if="${doctor.canBeGeneralPractitioner}" class="badge-yes">Yes</span>
                         <span th:unless="${doctor.canBeGeneralPractitioner}" class="badge-no">No</span>

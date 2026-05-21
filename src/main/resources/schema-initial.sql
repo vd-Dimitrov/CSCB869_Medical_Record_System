@@ -10,8 +10,13 @@ CREATE TABLE IF NOT EXISTS doctors (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     egn VARCHAR(10) UNIQUE NOT NULL ,
     name VARCHAR(255) NOT NULL ,
-    specialty VARCHAR(255) NOT NULL ,
     can_be_general_practitioner TINYINT(1) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS doctor_specialties (
+    doctor_id BIGINT NOT NULL,
+    specialty VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_ds_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
 
 CREATE TABLE IF NOT EXISTS patients (
@@ -34,13 +39,18 @@ CREATE TABLE IF NOT EXISTS checkups(
     patient_id BIGINT NOT NULL ,
     doctor_id BIGINT NOT NULL ,
     date    DATE NOT NULL ,
-    diagnosis_id BIGINT NOT NULL,
     treatment TEXT,
     price DECIMAL(10,2) NOT NULL ,
     paid_by_patient TINYINT(1) NOT NULL DEFAULT 0,
     CONSTRAINT fk_checkup_patient FOREIGN KEY (patient_id) REFERENCES patients(id),
-    CONSTRAINT fk_checkup_doctor  FOREIGN KEY (doctor_id) REFERENCES doctors(id),
-    CONSTRAINT fk_checkup_diagnoses FOREIGN KEY (diagnosis_id) REFERENCES diagnoses(id)
+    CONSTRAINT fk_checkup_doctor  FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+);
+
+CREATE TABLE IF NOT EXISTS checkup_diagnoses (
+    checkup_id BIGINT NOT NULL,
+    diagnosis_id BIGINT NOT NULL,
+    CONSTRAINT fk_cd_checkup    FOREIGN KEY (checkup_id)   REFERENCES checkups(id),
+    CONSTRAINT fk_cd_diagnosis  FOREIGN KEY (diagnosis_id) REFERENCES diagnoses(id)
 );
 
 CREATE TABLE IF NOT EXISTS sick_leaves(
@@ -68,12 +78,25 @@ CREATE TABLE IF NOT EXISTS app_users(
 ## initial data
 
 -- Doctors:
-INSERT INTO doctors (id, egn, name, specialty, can_be_general_practitioner) VALUES
-(1, '7001015678', 'Ivan Petrov',          'FAMILY_MEDICINE',    1),
-(2, '6504123456', 'Maria Kostadinova',    'CARDIOLOGY',         0),
-(3, '7203044532', 'Georgi Stoyanov',      'PEDIATRICS',         1),
-(4, '6809271234', 'Elena Nikolova',       'INTERNAL_MEDICINE',  0),
-(5, '7505097890', 'Petar Dimitrov',       'NEUROLOGY',          0);
+INSERT INTO doctors (id, egn, name, can_be_general_practitioner) VALUES
+(1, '7001015678', 'Ivan Petrov',       1),
+(2, '6504123456', 'Maria Kostadinova', 0),
+(3, '7203044532', 'Georgi Stoyanov',   1),
+(4, '6809271234', 'Elena Nikolova',    0),
+(5, '7505097890', 'Petar Dimitrov',    0);
+
+-- Doctor specialties (each doctor now has multiple):
+INSERT INTO doctor_specialties (doctor_id, specialty) VALUES
+(1, 'FAMILY_MEDICINE'),
+(1, 'INTERNAL_MEDICINE'),
+(2, 'CARDIOLOGY'),
+(2, 'INTERNAL_MEDICINE'),
+(3, 'PEDIATRICS'),
+(3, 'FAMILY_MEDICINE'),
+(4, 'INTERNAL_MEDICINE'),
+(4, 'CARDIOLOGY'),
+(5, 'NEUROLOGY'),
+(5, 'PSYCHIATRY');
 
 
 -- Patients:
@@ -101,33 +124,54 @@ INSERT INTO diagnoses (id, name, description) VALUES
 (9,  'Acute Gastritis',                 'Inflammation of the stomach lining'),
 (10, 'Seasonal Influenza',              'Viral respiratory illness caused by influenza viruses');
 
--- Check-ups
+-- Check-ups (diagnosis_id column removed — diagnoses linked via checkup_diagnoses below)
 -- paid_by_patient: 0 = insurance covered, 1 = patient pays
-INSERT INTO checkups (id, patient_id, doctor_id, date, diagnosis_id, treatment, price, paid_by_patient) VALUES
--- Dr. Petrov (family medicine, GP)
-( 1, 1, 1, '2025-01-10', 1,  'Amlodipine 5mg once daily, low-salt diet',           25.00, 0),
-( 2, 2, 1, '2025-01-14', 3,  'Paracetamol 500mg, bed rest, fluids',                 25.00, 1),
-( 3, 5, 1, '2025-01-22', 2,  'Metformin 500mg twice daily, dietary adjustments',    25.00, 0),
-( 4, 7, 1, '2025-02-05', 10, 'Ibuprofen 400mg, rest, increased fluid intake',       25.00, 1),
-( 5, 1, 1, '2025-03-01', 1,  'Increase Amlodipine to 10mg, follow-up in 1 month',  25.00, 0),
+INSERT INTO checkups (id, patient_id, doctor_id, date, treatment, price, paid_by_patient) VALUES
+-- Dr. Petrov (family medicine + internal medicine, GP)
+( 1, 1, 1, '2025-01-10', 'Amlodipine 5mg once daily, low-salt diet',           25.00, 0),
+( 2, 2, 1, '2025-01-14', 'Paracetamol 500mg, bed rest, fluids',                 25.00, 1),
+( 3, 5, 1, '2025-01-22', 'Metformin 500mg twice daily, dietary adjustments',    25.00, 0),
+( 4, 7, 1, '2025-02-05', 'Ibuprofen 400mg, rest, increased fluid intake',       25.00, 1),
+( 5, 1, 1, '2025-03-01', 'Increase Amlodipine to 10mg, follow-up in 1 month',  25.00, 0),
 
--- Dr. Kostadinova (cardiology)
-( 6, 1, 2, '2025-01-18', 8,  'Aspirin 100mg, Atorvastatin 20mg, cardiac monitoring', 80.00, 0),
-( 7, 5, 2, '2025-02-12', 8,  'Bisoprolol 5mg, ECG follow-up in 3 months',           80.00, 0),
-( 8, 4, 2, '2025-03-08', 1,  'Enalapril 10mg once daily',                            80.00, 1),
+-- Dr. Kostadinova (cardiology + internal medicine)
+( 6, 1, 2, '2025-01-18', 'Aspirin 100mg, Atorvastatin 20mg, cardiac monitoring', 80.00, 0),
+( 7, 5, 2, '2025-02-12', 'Bisoprolol 5mg, ECG follow-up in 3 months',           80.00, 0),
+( 8, 4, 2, '2025-03-08', 'Enalapril 10mg once daily',                            80.00, 1),
 
--- Dr. Stoyanov (pediatrics, GP)
-( 9, 3, 3, '2025-01-07', 3,  'Amoxicillin 250mg three times daily for 7 days',      30.00, 0),
-(10, 4, 3, '2025-01-25', 10, 'Rest, fluids, Vitamin C supplementation',              30.00, 1),
-(11, 6, 3, '2025-02-18', 4,  'Azithromycin 250mg for 5 days, inhaler if needed',    30.00, 0),
-(12, 8, 3, '2025-03-03', 3,  'Paracetamol syrup, nasal drops, bed rest',            30.00, 1),
+-- Dr. Stoyanov (pediatrics + family medicine, GP)
+( 9, 3, 3, '2025-01-07', 'Amoxicillin 250mg three times daily for 7 days',      30.00, 0),
+(10, 4, 3, '2025-01-25', 'Rest, fluids, Vitamin C supplementation',              30.00, 1),
+(11, 6, 3, '2025-02-18', 'Azithromycin 250mg for 5 days, inhaler if needed',    30.00, 0),
+(12, 8, 3, '2025-03-03', 'Paracetamol syrup, nasal drops, bed rest',            30.00, 1),
 
--- Dr. Nikolova (internal medicine)
-(13, 2, 4, '2025-02-20', 9,  'Omeprazole 20mg before meals, bland diet for 2 weeks', 60.00, 1),
-(14, 6, 4, '2025-03-12', 2,  'Insulin therapy initiation, nutritionist referral',    60.00, 0),
+-- Dr. Nikolova (internal medicine + cardiology)
+(13, 2, 4, '2025-02-20', 'Omeprazole 20mg before meals, bland diet for 2 weeks', 60.00, 1),
+(14, 6, 4, '2025-03-12', 'Insulin therapy initiation, nutritionist referral',    60.00, 0),
 
--- Dr. Dimitrov (neurology)
-(15, 3, 5, '2025-02-27', 6,  'Sumatriptan 50mg at onset, avoid triggers',            70.00, 0);
+-- Dr. Dimitrov (neurology + psychiatry)
+(15, 3, 5, '2025-02-27', 'Sumatriptan 50mg at onset, avoid triggers',            70.00, 0);
+
+-- Check-up diagnoses (multiple diagnoses per check-up where clinically realistic):
+INSERT INTO checkup_diagnoses (checkup_id, diagnosis_id) VALUES
+( 1, 1),        -- Hypertension
+( 2, 3),        -- Upper respiratory infection
+( 3, 2),        -- Diabetes
+( 3, 1),        -- + Hypertension (common comorbidity)
+( 4, 10),       -- Influenza
+( 5, 1),        -- Hypertension follow-up
+( 6, 8),        -- Coronary artery disease
+( 6, 1),        -- + Hypertension (common comorbidity)
+( 7, 8),        -- Coronary artery disease
+( 8, 1),        -- Hypertension
+( 9, 3),        -- Upper respiratory infection
+(10, 10),       -- Influenza
+(11, 4),        -- Acute bronchitis
+(11, 3),        -- + Upper respiratory infection
+(12, 3),        -- Upper respiratory infection
+(13, 9),        -- Acute gastritis
+(14, 2),        -- Diabetes
+(15, 6);        -- Migraine
 
 
 -- Sick leaves

@@ -74,7 +74,7 @@ class CheckUpControllerTest {
         ReflectionTestUtils.setField(checkUp, "id", 1L);
         checkUp.setDoctor(doctor);
         checkUp.setPatient(patient);
-        checkUp.setDiagnosis(diagnosis);
+        checkUp.setDiagnoses(List.of(diagnosis));
         checkUp.setDate(LocalDate.now());
         checkUp.setPrice(BigDecimal.valueOf(25));
     }
@@ -107,7 +107,7 @@ class CheckUpControllerTest {
     void list_asAdmin_seesAllCheckUps() throws Exception {
         when(checkUpService.findAll()).thenReturn(List.of(checkUp));
 
-        mockMvc.perform(get("/mappings").with(user(adminUser())))
+        mockMvc.perform(get("/checkups").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkups/list"))
                 .andExpect(model().attributeExists("checkUps"));
@@ -117,7 +117,7 @@ class CheckUpControllerTest {
     void list_asDoctor_seesAllCheckUps() throws Exception {
         when(checkUpService.findAll()).thenReturn(List.of(checkUp));
 
-        mockMvc.perform(get("/mappings").with(user(doctorUser(1L))))
+        mockMvc.perform(get("/checkups").with(user(doctorUser(1L))))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("checkUps"));
     }
@@ -126,7 +126,7 @@ class CheckUpControllerTest {
     void list_asPatient_seesOnlyOwnCheckUps() throws Exception {
         when(checkUpService.findByPatient(1L)).thenReturn(List.of(checkUp));
 
-        mockMvc.perform(get("/mappings").with(user(patientUser())))
+        mockMvc.perform(get("/checkups").with(user(patientUser())))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("checkUps", List.of(checkUp)));
     }
@@ -135,7 +135,7 @@ class CheckUpControllerTest {
     void detail_returnsDetailView() throws Exception {
         when(checkUpService.findById(1L)).thenReturn(checkUp);
 
-        mockMvc.perform(get("/mappings/1").with(user(adminUser())))
+        mockMvc.perform(get("/checkups/1").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkups/detail"))
                 .andExpect(model().attribute("checkUp", checkUp));
@@ -147,7 +147,7 @@ class CheckUpControllerTest {
         when(patientService.findAll()).thenReturn(List.of());
         when(diagnosisService.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/mappings/new").with(user(doctorUser(1L))))
+        mockMvc.perform(get("/checkups/new").with(user(doctorUser(1L))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkups/form"))
                 .andExpect(model().attributeExists("checkUpDto", "doctors", "patients", "diagnoses"));
@@ -159,7 +159,7 @@ class CheckUpControllerTest {
         when(patientService.findAll()).thenReturn(List.of());
         when(diagnosisService.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/mappings/new").with(user(adminUser())))
+        mockMvc.perform(get("/checkups/new").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkups/form"));
     }
@@ -171,7 +171,7 @@ class CheckUpControllerTest {
         when(patientService.findAll()).thenReturn(List.of());
         when(diagnosisService.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/mappings/1/edit").with(user(adminUser())))
+        mockMvc.perform(get("/checkups/1/edit").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkups/form"));
     }
@@ -183,7 +183,7 @@ class CheckUpControllerTest {
         when(patientService.findAll()).thenReturn(List.of());
         when(diagnosisService.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/mappings/1/edit").with(user(doctorUser(1L))))
+        mockMvc.perform(get("/checkups/1/edit").with(user(doctorUser(1L))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkups/form"));
     }
@@ -192,13 +192,13 @@ class CheckUpControllerTest {
     void editForm_asWrongDoctor_isForbidden() throws Exception {
         when(checkUpService.findById(1L)).thenReturn(checkUp);
 
-        mockMvc.perform(get("/mappings/1/edit").with(user(doctorUser(99L))))
+        mockMvc.perform(get("/checkups/1/edit").with(user(doctorUser(99L))))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void delete_callsServiceAndRedirects() throws Exception {
-        mockMvc.perform(post("/mappings/1/delete").with(csrf()).with(user(adminUser())))
+        mockMvc.perform(post("/checkups/1/delete").with(csrf()).with(user(adminUser())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/checkups"));
 

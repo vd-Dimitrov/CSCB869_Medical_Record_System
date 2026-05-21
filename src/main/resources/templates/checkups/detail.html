@@ -14,9 +14,16 @@
                 <tr><th>Date</th><td th:text="${checkUp.date}"></td></tr>
                 <tr><th>Patient</th><td th:text="${checkUp.patient.name}"></td></tr>
                 <tr><th>Doctor</th><td th:text="${checkUp.doctor.name}"></td></tr>
-                <tr><th>Diagnosis</th><td th:text="${checkUp.diagnosis.name}"></td></tr>
+                <tr>
+                    <th>Diagnoses</th>
+                    <td>
+                        <th:block th:each="d,stat : ${checkUp.diagnoses}">
+                            <span th:text="${d.name}"></span><span th:unless="${stat.last}">, </span>
+                        </th:block>
+                    </td>
+                </tr>
                 <tr><th>Treatment</th><td th:text="${checkUp.treatment}"></td></tr>
-                <tr><th>Price</th><td th:text="${checkUp.price + ' BGN'}"></td></tr>
+                <tr><th>Price</th><td th:text="${checkUp.price + ' EUR'}"></td></tr>
                 <tr>
                     <th>Paid By</th>
                     <td>

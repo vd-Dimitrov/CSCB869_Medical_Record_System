@@ -1,9 +1,11 @@
 package com.nbu.cscb869_medical_record_system.service.impl;
 
 import com.nbu.cscb869_medical_record_system.data.entity.CheckUp;
+import com.nbu.cscb869_medical_record_system.data.entity.Diagnosis;
 import com.nbu.cscb869_medical_record_system.data.entity.Doctor;
 import com.nbu.cscb869_medical_record_system.data.entity.Patient;
 import com.nbu.cscb869_medical_record_system.data.repository.CheckUpRepository;
+import com.nbu.cscb869_medical_record_system.data.repository.DiagnosisRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.DoctorRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.PatientRepository;
 import com.nbu.cscb869_medical_record_system.data.repository.SickLeaveRepository;
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,13 +28,27 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final SickLeaveRepository sickLeaveRepository;
+    private final DiagnosisRepository diagnosisRepository;
 
     @Override
     public List<Patient> getPatientsByDiagnosis(Long diagnosisId) {
-        return checkUpRepository.findByDiagnosisId(diagnosisId).stream()
+        return checkUpRepository.findByDiagnosesId(diagnosisId).stream()
                 .map(CheckUp::getPatient)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<Diagnosis, List<Patient>> getPatientsByAllDiagnoses() {
+        Map<Diagnosis, List<Patient>> map = new LinkedHashMap<>();
+        for (Diagnosis diagnosis : diagnosisRepository.findAll()) {
+            List<Patient> patients = checkUpRepository.findByDiagnosesId(diagnosis.getId()).stream()
+                    .map(CheckUp::getPatient)
+                    .distinct()
+                    .collect(Collectors.toList());
+            map.put(diagnosis, patients);
+        }
+        return map;
     }
 
     @Override

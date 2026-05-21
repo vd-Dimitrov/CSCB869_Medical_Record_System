@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/checkups")
@@ -84,7 +85,9 @@ public class CheckUpController {
         dto.setPatientId(checkUp.getPatient().getId());
         dto.setDoctorId(checkUp.getDoctor().getId());
         dto.setDate(checkUp.getDate());
-        dto.setDiagnosisId(checkUp.getDiagnosis().getId());
+        dto.setDiagnosisIds(checkUp.getDiagnoses().stream()
+                .map(d -> d.getId())
+                .collect(Collectors.toList()));
         dto.setTreatment(checkUp.getTreatment());
         dto.setPrice(checkUp.getPrice());
         model.addAttribute("checkUpDto", dto);

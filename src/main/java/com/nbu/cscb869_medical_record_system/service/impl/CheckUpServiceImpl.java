@@ -2,7 +2,9 @@ package com.nbu.cscb869_medical_record_system.service.impl;
 
 import com.nbu.cscb869_medical_record_system.data.dto.CheckUpDto;
 import com.nbu.cscb869_medical_record_system.data.entity.CheckUp;
+import com.nbu.cscb869_medical_record_system.data.entity.SickLeave;
 import com.nbu.cscb869_medical_record_system.data.repository.CheckUpRepository;
+import com.nbu.cscb869_medical_record_system.data.repository.SickLeaveRepository;
 import com.nbu.cscb869_medical_record_system.exceptions.AccessDeniedException;
 import com.nbu.cscb869_medical_record_system.exceptions.ResourceNotFoundException;
 import com.nbu.cscb869_medical_record_system.helpers.EntityMapper;
@@ -19,6 +21,7 @@ import java.util.List;
 public class CheckUpServiceImpl implements CheckUpService {
 
     private final CheckUpRepository checkUpRepository;
+    private final SickLeaveRepository sickLeaveRepository;
     private final EntityMapper entityMapper;
 
     @Override
@@ -44,7 +47,7 @@ public class CheckUpServiceImpl implements CheckUpService {
 
     @Override
     public List<CheckUp> findByDiagnosis(Long diagnosisId) {
-        return checkUpRepository.findByDiagnosisId(diagnosisId);
+        return checkUpRepository.findByDiagnosesId(diagnosisId);
     }
 
     @Override
@@ -53,10 +56,15 @@ public class CheckUpServiceImpl implements CheckUpService {
     }
 
     @Override
+    @Transactional
     public CheckUp save(CheckUpDto dto) {
         CheckUp checkUp = new CheckUp();
         entityMapper.map(dto, checkUp);
-        return checkUpRepository.save(checkUp);
+        CheckUp saved = checkUpRepository.save(checkUp);
+        if (dto.isCreateSickLeave() && dto.getSickLeaveDuration() != null) {
+            createSickLeave(saved, dto.getSickLeaveDuration());
+        }
+        return saved;
     }
 
     @Override
@@ -67,12 +75,25 @@ public class CheckUpServiceImpl implements CheckUpService {
             throw new AccessDeniedException("You can only edit your own check-ups");
         }
         entityMapper.map(dto, checkUp);
-        return checkUpRepository.save(checkUp);
+        CheckUp saved = checkUpRepository.save(checkUp);
+        if (dto.isCreateSickLeave() && dto.getSickLeaveDuration() != null) {
+            createSickLeave(saved, dto.getSickLeaveDuration());
+        }
+        return saved;
     }
 
     @Override
     public void delete(Long id) {
         findById(id);
         checkUpRepository.deleteById(id);
+    }
+
+    private void createSickLeave(CheckUp checkUp, int durationDays) {
+        SickLeave sickLeave = new SickLeave();
+        sickLeave.setPatient(checkUp.getPatient());
+        sickLeave.setDoctor(checkUp.getDoctor());
+        sickLeave.setStartDate(checkUp.getDate());
+        sickLeave.setDurationDays(durationDays);
+        sickLeaveRepository.save(sickLeave);
     }
 }

@@ -48,7 +48,7 @@ class DoctorControllerTest {
         ReflectionTestUtils.setField(doctor, "id", 1L);
         doctor.setName("Dr. Petrov");
         doctor.setEgn("7001015678");
-        doctor.setSpecialty(MedicalSpecialty.FAMILY_MEDICINE);
+        doctor.setSpecialties(List.of(MedicalSpecialty.FAMILY_MEDICINE));
         doctor.setCanBeGeneralPractitioner(true);
     }
 
@@ -96,7 +96,7 @@ class DoctorControllerTest {
         mockMvc.perform(post("/doctors/new").with(csrf())
                         .param("name", "Dr. Smith")
                         .param("egn", "1234567890")
-                        .param("specialty", "CARDIOLOGY"))
+                        .param("specialties", "CARDIOLOGY"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/doctors"));
 
@@ -133,7 +133,7 @@ class DoctorControllerTest {
         mockMvc.perform(post("/doctors/1/edit").with(csrf())
                         .param("name", "Dr. Smith")
                         .param("egn", "1234567890")
-                        .param("specialty", "CARDIOLOGY"))
+                        .param("specialties", "CARDIOLOGY"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/doctors"));
     }

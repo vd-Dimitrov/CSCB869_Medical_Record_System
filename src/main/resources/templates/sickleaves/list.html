@@ -8,9 +8,6 @@
     <div class="container-lg">
         <div class="page-header">
             <h1 class="page-title"><i class="bi bi-file-medical me-2 icon-warning"></i>Sick Leaves</h1>
-            <a th:href="@{/sickleaves/new}" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
-                <i class="bi bi-plus-lg me-1"></i>New Sick Leave
-            </a>
         </div>
         <div class="card">
             <table class="table data-table">
@@ -24,11 +21,6 @@
                     <td th:text="${sl.startDate}"></td>
                     <td th:text="${sl.durationDays}"></td>
                     <td class="d-flex gap-2 flex-wrap">
-                        <a th:if="${currentDoctorId == null or sl.doctor.id == currentDoctorId}"
-                           th:href="@{/sickleaves/{id}/edit(id=${sl.id})}" class="btn-action-edit"
-                           sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
-                            <i class="bi bi-pencil"></i>Edit
-                        </a>
                         <form th:action="@{/sickleaves/{id}/delete(id=${sl.id})}" method="post" class="d-inline"
                               onsubmit="return confirm('Delete this sick leave?');" sec:authorize="hasRole('ADMIN')">
                             <button type="submit" class="btn-action-delete">

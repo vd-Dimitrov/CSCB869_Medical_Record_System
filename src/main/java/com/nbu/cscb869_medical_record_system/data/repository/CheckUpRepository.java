@@ -14,12 +14,12 @@ import java.util.List;
 public interface CheckUpRepository extends JpaRepository<CheckUp, Long> {
     List<CheckUp> findByPatientId(Long patientId);
     List<CheckUp> findByDoctorId(Long doctorId);
-    List<CheckUp> findByDiagnosisId(Long diagnosisId);
+    List<CheckUp> findByDiagnosesId(Long diagnosisId);
 
     List<CheckUp> findByDoctorAndDateBetween(Doctor doctor, LocalDate from, LocalDate to);
     List<CheckUp> findByDoctorIdAndDateBetween(Long doctorId, LocalDate from, LocalDate to);
 
-    @Query("SELECT c.diagnosis.name as diagnosis, COUNT(c) as cnt FROM CheckUp c GROUP BY diagnosis ORDER BY cnt DESC")
+    @Query("SELECT d.name, COUNT(c) FROM CheckUp c JOIN c.diagnoses d GROUP BY d ORDER BY COUNT(c) DESC")
     List<Object[]> findDiagnosisCounts();
 
     @Query("SELECT COALESCE(SUM(c.price), 0) FROM CheckUp c WHERE c.paidByPatient = true")

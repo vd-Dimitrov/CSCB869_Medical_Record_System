@@ -40,10 +40,10 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Duration (days)</label>
-                            <input type="number" th:field="*{durationDays}" class="form-control" min="1"
-                                   th:classappend="${#fields.hasErrors('durationDays')} ? 'is-invalid'"
+                            <input type="number" th:field="*{duration}" class="form-control" min="1"
+                                   th:classappend="${#fields.hasErrors('duration')} ? 'is-invalid'"
                                    placeholder="e.g. 7">
-                            <div class="invalid-feedback" th:errors="*{durationDays}"></div>
+                            <div class="invalid-feedback" th:errors="*{duration}"></div>
                         </div>
                     </div>
                     <div class="form-actions">

@@ -22,8 +22,12 @@
                     <td th:text="${cu.date}"></td>
                     <td th:text="${cu.patient.name}"></td>
                     <td th:text="${cu.doctor.name}"></td>
-                    <td th:text="${cu.diagnosis.name}"></td>
-                    <td th:text="${cu.price + ' BGN'}"></td>
+                    <td>
+                        <th:block th:each="d,stat : ${cu.diagnoses}">
+                            <span th:text="${d.name}"></span><span th:unless="${stat.last}">, </span>
+                        </th:block>
+                    </td>
+                    <td th:text="${cu.price + ' EUR'}"></td>
                     <td>
                         <span th:if="${cu.paidByPatient}" class="badge-patient">Patient</span>
                         <span th:unless="${cu.paidByPatient}" class="badge-nhif">NHIF</span>

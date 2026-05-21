@@ -2,11 +2,13 @@ package com.nbu.cscb869_medical_record_system.data.dto;
 
 import com.nbu.cscb869_medical_record_system.data.enums.MedicalSpecialty;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,8 +23,8 @@ public class DoctorDto {
     @Pattern(regexp = "\\d{10}", message = "egn must be 10 digits")
     private String egn;
 
-    @NotNull(message = "Specialty is required")
-    private MedicalSpecialty specialty;
+    @NotEmpty(message = "At least one specialty is required")
+    private List<MedicalSpecialty> specialties;
 
     private boolean canBeGeneralPractitioner;
 }

@@ -1,6 +1,7 @@
 package com.nbu.cscb869_medical_record_system.service;
 
 import com.nbu.cscb869_medical_record_system.data.entity.CheckUp;
+import com.nbu.cscb869_medical_record_system.data.entity.Diagnosis;
 import com.nbu.cscb869_medical_record_system.data.entity.Doctor;
 import com.nbu.cscb869_medical_record_system.data.entity.Patient;
 
@@ -11,6 +12,8 @@ import java.util.Map;
 
 public interface StatisticsService {
     List<Patient> getPatientsByDiagnosis(Long diagnosisId);
+
+    Map<Diagnosis, List<Patient>> getPatientsByAllDiagnoses();
 
     String getMostCommonDiagnosis();
 

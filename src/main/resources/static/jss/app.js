@@ -4,7 +4,7 @@
 // detects whether a cell contains a date, number or plain text
     function detectType(value) {
         if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return 'date';
-        if (/^[\d.,]+(\s*BGN)?$/.test(value.trim())) return 'number';
+        if (/^[\d.,]+(\s*EUR)?$/.test(value.trim())) return 'number';
         return 'text';
     }
 

@@ -56,7 +56,7 @@ public class DoctorController {
         dto.setId(doctor.getId());
         dto.setName(doctor.getName());
         dto.setEgn(doctor.getEgn());
-        dto.setSpecialty(doctor.getSpecialty());
+        dto.setSpecialties(doctor.getSpecialties());
         dto.setCanBeGeneralPractitioner(doctor.isCanBeGeneralPractitioner());
         model.addAttribute("doctorDto", dto);
         model.addAttribute("specialties", MedicalSpecialty.values());
