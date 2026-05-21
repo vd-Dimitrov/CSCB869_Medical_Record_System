@@ -62,9 +62,9 @@ class PatientControllerTest {
         return new SecurityUser(appUser);
     }
 
-    private SecurityUser patientUser(Long patientId) {
+    private SecurityUser patientUser() {
         Patient p = new Patient();
-        ReflectionTestUtils.setField(p, "id", patientId);
+        ReflectionTestUtils.setField(p, "id", 1L);
         AppUser appUser = new AppUser();
         appUser.setRole(UserRole.PATIENT);
         appUser.setPatient(p);
@@ -94,7 +94,7 @@ class PatientControllerTest {
     void list_asPatient_seesOnlySelf() throws Exception {
         when(patientService.findById(1L)).thenReturn(patient);
 
-        mockMvc.perform(get("/patients").with(user(patientUser(1L))))
+        mockMvc.perform(get("/patients").with(user(patientUser())))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("patients", List.of(patient)));
     }
@@ -103,7 +103,7 @@ class PatientControllerTest {
     void detail_asPatient_viewingOwnProfile_returnsDetailView() throws Exception {
         when(patientService.findById(1L)).thenReturn(patient);
 
-        mockMvc.perform(get("/patients/1").with(user(patientUser(1L))))
+        mockMvc.perform(get("/patients/1").with(user(patientUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("patients/details"))
                 .andExpect(model().attribute("patient", patient));
@@ -111,7 +111,7 @@ class PatientControllerTest {
 
     @Test
     void detail_asPatient_viewingOtherProfile_redirectsToOwn() throws Exception {
-        mockMvc.perform(get("/patients/99").with(user(patientUser(1L))))
+        mockMvc.perform(get("/patients/99").with(user(patientUser())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/patients/1"));
     }
