@@ -58,6 +58,20 @@
                             <textarea th:field="*{treatment}" class="form-control" rows="3"
                                       placeholder="Describe prescribed treatment..."></textarea>
                         </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" th:field="*{createSickLeave}" class="form-check-input"
+                                       id="createSickLeave" onclick="toggleSickLeave()">
+                                <label class="form-check-label" for="createSickLeave">Issue sick leave</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="sickLeaveDurationField" style="display:none">
+                            <label class="form-label">Sick Leave Duration (days)</label>
+                            <input type="number" th:field="*{sickLeaveDuration}" class="form-control" min="1"
+                                   th:classappend="${#fields.hasErrors('sickLeaveDuration')} ? 'is-invalid'"
+                                   placeholder="e.g. 7">
+                            <div class="invalid-feedback" th:errors="*{sickLeaveDuration}"></div>
+                        </div>
                         <div class="col-md-6">
                             <label class="form-label">Price (EUR)</label>
                             <label>
@@ -78,5 +92,17 @@
     </div>
 </div>
 <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script>
+    function toggleSickLeave() {
+        const checked = document.getElementById('createSickLeave').checked;
+        document.getElementById('sickLeaveDurationField').style.display = checked ? 'block' : 'none';
+    }
+    // Show field on page load if checkbox was already checked (e.g. validation error re-render)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('createSickLeave').checked) {
+            document.getElementById('sickLeaveDurationField').style.display = 'block';
+        }
+    });
+</script>
 </body>
 </html>
