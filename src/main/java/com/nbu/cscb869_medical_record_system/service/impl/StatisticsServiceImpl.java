@@ -10,8 +10,6 @@ import com.nbu.cscb869_medical_record_system.data.repository.SickLeaveRepository
 import com.nbu.cscb869_medical_record_system.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -22,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class StatisticsServiceImpl implements StatisticsService {
     private final CheckUpRepository checkUpRepository;
     private final PatientRepository patientRepository;

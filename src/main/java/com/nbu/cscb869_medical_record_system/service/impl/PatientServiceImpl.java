@@ -8,37 +8,31 @@ import com.nbu.cscb869_medical_record_system.helpers.EntityMapper;
 import com.nbu.cscb869_medical_record_system.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PatientServiceImpl implements PatientService {
     private final EntityMapper entityMapper;
     private final PatientRepository patientRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public List<Patient> findAll() {
         return patientRepository.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Patient findById(Long id) {
         return patientRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException("Patient", id));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Patient> findByGeneralPractitioner(Long doctorId) {
         return patientRepository.findByGeneralPractitionerId(doctorId);
     }
 
-    //ToDo add the new mapToDto function from the upcoming helper class
     @Override
     public Patient save(PatientDto dto) {
         Patient patient = new Patient();
