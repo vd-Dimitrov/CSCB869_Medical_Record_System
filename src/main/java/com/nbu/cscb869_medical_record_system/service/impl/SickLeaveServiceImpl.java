@@ -14,20 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SickLeaveServiceImpl implements SickLeaveService {
     private final SickLeaveRepository sickLeaveRepository;
     private final EntityMapper entityMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public List<SickLeave> findAll() {
         return sickLeaveRepository.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SickLeave findById(Long id) {
         return sickLeaveRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException("Sick leave", id));
@@ -51,6 +48,7 @@ public class SickLeaveServiceImpl implements SickLeaveService {
     }
 
     @Override
+    @Transactional
     public SickLeave update(Long id, SickLeaveDto dto, Long currentDoctorId) {
         SickLeave sickLeave = sickLeaveRepository.getReferenceById(id);
         if (currentDoctorId != null && !sickLeave.getDoctor().getId().equals(currentDoctorId)){

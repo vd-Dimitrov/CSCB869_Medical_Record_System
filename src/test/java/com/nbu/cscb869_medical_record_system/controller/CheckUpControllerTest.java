@@ -94,9 +94,9 @@ class CheckUpControllerTest {
         return new SecurityUser(appUser);
     }
 
-    private SecurityUser patientUser(Long patientId) {
+    private SecurityUser patientUser() {
         Patient p = new Patient();
-        ReflectionTestUtils.setField(p, "id", patientId);
+        ReflectionTestUtils.setField(p, "id", 1L);
         AppUser appUser = new AppUser();
         appUser.setRole(UserRole.PATIENT);
         appUser.setPatient(p);
@@ -126,7 +126,7 @@ class CheckUpControllerTest {
     void list_asPatient_seesOnlyOwnCheckUps() throws Exception {
         when(checkUpService.findByPatient(1L)).thenReturn(List.of(checkUp));
 
-        mockMvc.perform(get("/mappings").with(user(patientUser(1L))))
+        mockMvc.perform(get("/mappings").with(user(patientUser())))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("checkUps", List.of(checkUp)));
     }

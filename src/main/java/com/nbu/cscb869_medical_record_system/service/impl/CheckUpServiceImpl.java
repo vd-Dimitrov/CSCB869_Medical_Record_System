@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class CheckUpServiceImpl implements CheckUpService {
@@ -23,26 +22,22 @@ public class CheckUpServiceImpl implements CheckUpService {
     private final EntityMapper entityMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public List<CheckUp> findAll() {
         return checkUpRepository.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CheckUp findById(Long id) {
         return checkUpRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException("Check up", id));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<CheckUp> findByPatient(Long patientId) {
         return checkUpRepository.findByPatientId(patientId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<CheckUp> findByDoctor(Long doctorId) {
         return checkUpRepository.findByDoctorId(doctorId);
     }
@@ -65,6 +60,7 @@ public class CheckUpServiceImpl implements CheckUpService {
     }
 
     @Override
+    @Transactional
     public CheckUp update(Long id, CheckUpDto dto, Long currentDoctorId) {
         CheckUp checkUp = findById(id);
         if (currentDoctorId != null && !checkUp.getDoctor().getId().equals(currentDoctorId)){
